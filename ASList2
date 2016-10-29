@@ -1,0 +1,115 @@
+Architektura komputerow i systemy operacyjne
+
+Lista II
+
+1)
+/dev - folder zawierajacy specjalne pliki obslugujace wszystkie urzadzenia komputera. Mozna powiedziec, ze folder ten zawiera sterowniki dla urzadzen. Wiekszosc sterownikow instalowana jest podczas instalacji.
+
+/dev/fd0 - plik odpowiedzialny za stacje dyskietek
+
+/dev/fb0 - abstrakcyjna warstwa pomiedzy programami a karta graficzna (Framebuffer)
+
+/dev/loop0 - (Loopback devices) urzywa sie do montowania  systemow plikow ktorych nie ma jeszcze na nosniku
+
+/dev/random - generator losowych liczb jadra
+
+/dev/sda.. - partycje dysku twardego
+
+/dev/tty - reprezentuje aktualny terminal
+
+
+/proc - centrum kontroli i informacji dla jadra. Wiele komend w konsoli korzysta z informacji pochodzacych z tego katalogu.
+
+zawartoc:
+
+- katalogi zawierajace tylko cyfry w nazwach odpowiadaja procesom aktualnie dzialajacym w systemie (nazwa katalogu to pid procesu)
+
+- cpuinfo zbior informacji o procesach maszyny
+
+- filesystems spis systemow plikow obslugiwanych przez jadro
+
+
+pierwszy sektor z dysku glownego: sudo dd if=/dev/sda bs=512 count=1 | hexdump -C
+
+
+2)
+
+$ pidof <nazwa procesu> - komenda wyswietlajaca PID procesu po nazwie (np pidof zsh)
+
+$ kill -9 <pid procesu> lub kull -15 <pid procesu> - komenda do zabicia procesu
+
+$ ps -o pid,ppid lub ps -xo pid, ppid - pid procesu i rodzica dzialajacych procesow
+
+$ ps -xo pid,stat lub ps -o stat - stany procesow
+
+$ ps -p[<id procesu>] -o comm,pid, ppid - wyswietla nazwe pid i ppid procesu po id
+
+$ ps -o pid,nice - komenda wyswietlajaca nice
+
+$ ps -o pid,priority - kimenda wyswietlajaca priorytet procesu
+
+$ ps -o pid,%cpu,%mem,time - komenda wyswietlajaca pid, uzycie procesora, uzycie pamieci oraz zuzycie czasu procesora dla procesow
+
+$ ps -p <id procesu> -o %cpu,%mem - komenda wyswietlajaca uzycie procesora oraz pamieci dla danego procesu
+
+
+Aby sptawdzic jakie urzadzenie wykorzystuje dany terminal wpisujemy komende tty,
+
+aby sprawdzic jakie procesy wykonuje dany terminal wpisujemy komende ps axjf patrzymy na kolumne tty i nastepnie na kolumne command
+
+
+3)
+
+-Wall - wprowadza nasluchiwanie bledow wynikajacych z konstrukcji, dzieki czemu bledy sa duzo latwiejsze do przechwycenia (Language - specific warnings) (wall turns on some warnings flags)
+
+-pedantic - emituje wszystkie obowiazkowe diagnostyki w standardzie C i traktuje ich brak jako blad.
+
+4)
+
+$ find / | tr a-z A-Z | sort - potok 3 polecen
+
+Wszystkie procesy maja tego samego rodzica czyli terminal na ktorym zostaly uruchomione.
+
+Dodatkowo pierwszy proces w potoku zostaje tak jakby liderem grupy procesow i to jego id widnieje w kolumnie PGID (process group id) pozostalych procesow w potoku
+
+5)
+Najpierw tworzymy potok nazwany:
+
+$ mkfifo my_pipe
+
+Nastepnie w pierwszym terminalu:
+
+$ cat > my_pipe
+
+Po zatwierdzeniu komendy wpisujemy dowolny tekst i zatwierdzamy
+
+Otwieramy inny terminal i wpisujemy:
+
+$ cat < my_pipe
+
+Powinien nam sie wyswietlic tekst ktory wpisalismy w pierwszym terminalu
+
+W przypadku jesli jest wieksza ilosc terminali z uruchomiona komenda $ cat < my_pipe tekst wpisany w pierwszym terminalu bedzie sie wyswietlal w tylko w jednym a po wpisaniu kolejnego tekstu wyswietli sie w nastepnym
+
+
+
+Polecenie cat czytajace z potoku czeka na wiecej danych do momentu dzialania procesu piszacego do potoku, natomiast proces piszacy do potoku konczy prace w tylko w wypadku zadonczenia procesu.
+
+6)
+
+#include <stdio.h>
+
+int main() {
+
+  int i;
+  for (i = 1; i<257; i++){
+    printf("\033[38;5;%dm", i);
+    printf("%d Hello world \n", i);
+  }
+  return 0;
+}
+
+Tak, terminal moze wyswietlic 256 kolorow
+
+7)
+$ for i in `ls -p | grep -v /`; do mv $i `echo $i | tr A-Z a-z`; done
