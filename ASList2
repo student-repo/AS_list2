@@ -24,12 +24,18 @@ zawartoc:
 
 - katalogi zawierajace tylko cyfry w nazwach odpowiadaja procesom aktualnie dzialajacym w systemie (nazwa katalogu to pid procesu)
 
-- cpuinfo zbior informacji o procesach maszyny
+- cpuinfo zbior informacji o procesorach maszyny
 
 - filesystems spis systemow plikow obslugiwanych przez jadro
 
 
 pierwszy sektor z dysku glownego: sudo dd if=/dev/sda bs=512 count=1 | hexdump -C
+
+peirwszy sektor z pendrive
+
+- sprawdzamy gdzie jest nasz pendrive $ sudo fdisk -l
+
+- sudo dd if=/dev/sdb1 bs=512 count=1 | hexdump -C
 
 
 2)
@@ -112,4 +118,17 @@ int main() {
 Tak, terminal moze wyswietlic 256 kolorow
 
 7)
+touch -- --ABC\ \ \ DFF
+
+
 $ for i in `ls -p | grep -v /`; do mv $i `echo $i | tr A-Z a-z`; done
+for i in `ls -pb | grep -v /`; do mv -- $i `echo $i | tr A-Z a-z`; done
+IFS=$'\n'
+
+
+TE SA POPRAWNE
+
+ls -p | grep -v | while read f; do mv -- "$f" "$(echo $f | tr A-Z a-z)"; done
+
+
+find -type f | rename 'y/A-Z/a-z/'
