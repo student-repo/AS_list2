@@ -120,15 +120,16 @@ Tak, terminal moze wyswietlic 256 kolorow
 7)
 touch -- --ABC\ \ \ DFF
 
-
-$ for i in `ls -p | grep -v /`; do mv $i `echo $i | tr A-Z a-z`; done
-for i in `ls -pb | grep -v /`; do mv -- $i `echo $i | tr A-Z a-z`; done
-IFS=$'\n'
-
-
 TE SA POPRAWNE
 
 ls -p | grep -v | while read f; do mv -- "$f" "$(echo $f | tr A-Z a-z)"; done
 
 
 find -type f | rename 'y/A-Z/a-z/'
+
+
+
+
+// $ for i in `ls -p | grep -v /`; do mv $i `echo $i | tr A-Z a-z`; done
+// for i in `ls -pb | grep -v /`; do mv -- $i `echo $i | tr A-Z a-z`; done
+// IFS=$'\n'
